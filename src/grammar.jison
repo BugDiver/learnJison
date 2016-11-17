@@ -32,42 +32,25 @@
 
 expressions
     : e EOF
-        {return $1.toString();}
+        {return $1;}
     ;
 
 e
     : e '+' e
-       {
+        {
             var tree = new ParseTree(new Node($2,nodeTypes.OPERATOR));
-            if($1.constructor ==  Number){
-                tree.addLeftChild(new Node($1,nodeTypes.NUMBER));
-            }else{
-                tree.addLeftChild($1);
-            }
-            if($3.constructor ==  Number){
-                tree.addRightChild(new Node($3,nodeTypes.NUMBER));
-            }else{
-                tree.addRightChild($3);
-            }
+            tree.addLeftChild($1);
+            tree.addRightChild($3);
             $$ = tree;
-       } 
+        } 
     
     | e '*' e
         {
             var tree = new ParseTree(new Node($2,nodeTypes.OPERATOR));
-            if($1.constructor ==  Number){
-                tree.addLeftChild(new Node($1,nodeTypes.NUMBER));
-            }else{
-                tree.addLeftChild($1);
-            }
-            if($3.constructor ==  Number){
-                tree.addRightChild(new Node($3,nodeTypes.NUMBER));
-            }else{
-                tree.addRightChild($3);
-            }
+            tree.addLeftChild($1);
+            tree.addRightChild($3);
             $$ = tree;
         }
-
 
     | NUMBER
         {$$ = Number(yytext);}

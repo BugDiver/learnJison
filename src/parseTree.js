@@ -11,11 +11,19 @@ var ParseTree = function(parentNode){
 
 ParseTree.prototype = {
 	addLeftChild : function(child){
-		this.leftChild = child;
+		if(child.constructor ==  Number){
+           this.leftChild = new Node(child,nodeTypes.NUMBER);
+        }else{
+        	this.leftChild = child;
+        }
 	},
 
 	addRightChild : function(child){
-		this.rightChild = child;
+		if(child.constructor ==  Number){
+           this.rightChild = new Node(child,nodeTypes.NUMBER);
+        }else{
+        	this.rightChild = child;
+        }
 	},
 
 	toString : function(){
