@@ -6,6 +6,13 @@
     var ParseTree = require(path.resolve('./src/parseTree.js'));
     var Node = require(path.resolve('./src/node.js')).Node;
     var nodeTypes = require(path.resolve('./src/node.js')).nodeTypes;
+
+    var buildTree = function(lc,pr,rc){
+        var tree = new ParseTree(new Node(pr,nodeTypes.OPERATOR));
+        tree.addLeftChild(lc);
+        tree.addRightChild(rc);
+        return tree;
+    } 
 %}
 
 /* lexical grammar */
@@ -37,20 +44,10 @@ expressions
 
 e
     : e '+' e
-        {
-            var tree = new ParseTree(new Node($2,nodeTypes.OPERATOR));
-            tree.addLeftChild($1);
-            tree.addRightChild($3);
-            $$ = tree;
-        } 
+        {$$ = buildTree($1,$2,$3);} 
     
     | e '*' e
-        {
-            var tree = new ParseTree(new Node($2,nodeTypes.OPERATOR));
-            tree.addLeftChild($1);
-            tree.addRightChild($3);
-            $$ = tree;
-        }
+        {$$ = buildTree($1,$2,$3);}
 
     | NUMBER
         {$$ = Number(yytext);}

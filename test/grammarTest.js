@@ -5,7 +5,7 @@ var grammar = require('fs').readFileSync('./src/grammar.jison','utf-8');
 
 
 var parser = new Parser(grammar);
-
+console.log(parser);
 describe('grammar',function(){
 	it('should parse "1+2" and give "(one plus two)"',function(){
 	 	var actual = parser.parse('1+2');
