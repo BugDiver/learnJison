@@ -26,6 +26,12 @@ ParseTree.prototype = {
         }
 	},
 
+	resolve : function(){
+		var left = (this.leftChild instanceof ParseTree) && this.leftChild.resolve() || this.leftChild;
+		var right = (this.rightChild instanceof ParseTree) && this.rightChild.resolve() || this.rightChild;
+		return this.parentNode.evaluate(left,right);
+	},
+
 	toString : function(){
 		return start + this.leftChild + this.parentNode + this.rightChild + end; 
 	}

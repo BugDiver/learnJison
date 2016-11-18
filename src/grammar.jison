@@ -2,7 +2,6 @@
 
 %{  
     var path = require('path')
-    var convert = require(path.resolve('./src/toWord.js'));
     var ParseTree = require(path.resolve('./src/parseTree.js'));
     var Node = require(path.resolve('./src/node.js')).Node;
     var nodeTypes = require(path.resolve('./src/node.js')).nodeTypes;
