@@ -2,7 +2,7 @@ var path = require('path');
 var convert = require('./toWord');
 
 var nodeTypes = { OPERATOR: "OPERATOR", NUMBER: "NUMBER" };
-var operators = { '+': ' plus ', '*': ' times ' };
+var operators = { '+': ' plus ', '*': ' times ' , '-' : ' minus ','/' : ' divided by ', '^' : ' power '};
 
 var methods = {
     '+': function(r, l) {
@@ -10,7 +10,17 @@ var methods = {
     },
     '*': function(r, l) {
         return r * l 
+    },
+    '-': function(r, l) {
+        return r - l;
+    },
+    '/': function(r, l) {
+        return r / l;
+    },
+    '^': function(r, l) {
+        return Math.pow(r,l);
     }
+
 }
 
 var Node = function Node(data, type) {

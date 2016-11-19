@@ -57,5 +57,21 @@ describe('ParseTree', function() {
 
             expect(9).to.be.equal(parentTree.resolve());
         });
+
+        it('shoud resolve the tree consisting with comlex expression.', function() {
+            var pow = new Node('^', nodeTypes.OPERATOR);
+            var division = new Node('/', nodeTypes.OPERATOR);
+
+            var parentTree = new ParseTree(pow);
+            var childTree = new ParseTree(division)
+
+            childTree.addLeftChild(new Node(8, nodeTypes.NUMBER));
+            childTree.addRightChild(new Node(2, nodeTypes.NUMBER));
+
+            parentTree.addLeftChild(childTree);
+            parentTree.addRightChild(new Node(3, nodeTypes.NUMBER));
+            
+            expect(64).to.be.equal(parentTree.resolve());
+        });
     });
 });

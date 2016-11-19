@@ -20,8 +20,12 @@
 
 \s+                   /* skip whitespace */
 [0-9]+("."[0-9]+)?\b  return 'NUMBER'
-"*"                   return '*'
 "+"                   return '+'
+"-"                   return '-'
+"-"                   return '-'
+"*"                   return '*'
+"/"                   return '/'
+"^"                   return '^'
 <<EOF>>               return 'EOF'
 .                     return 'INVALID'
 
@@ -31,6 +35,7 @@
 
 %left '+' '-'
 %left '*' '/'
+%left '^'
 
 %start expressions
 
@@ -45,7 +50,16 @@ e
     : e '+' e
         {$$ = buildTree($1,$2,$3);} 
     
+    | e '-' e
+        {$$ = buildTree($1,$2,$3);}
+
     | e '*' e
+        {$$ = buildTree($1,$2,$3);}
+
+    | e '/' e
+        {$$ = buildTree($1,$2,$3);}
+
+    | e '^' e
         {$$ = buildTree($1,$2,$3);}
 
     | NUMBER
