@@ -1,67 +1,69 @@
-/* description: Parses and executes mathematical expressions. */
-
-%{  
-    var path = require('path')
-    var ParseTree = require(path.resolve('./src/parseTree.js'));
-    var Node = require(path.resolve('./src/node.js')).Node;
-    var nodeTypes = require(path.resolve('./src/node.js')).nodeTypes;
-
-    var buildTree = function(lc,pr,rc){
-        var tree = new ParseTree(new Node(pr,nodeTypes.OPERATOR));
-        tree.addLeftChild(lc);
-        tree.addRightChild(rc);
-        return tree;
-    } 
+%{
+    var path = require('path');
+    var createNode = require(path.resolve('./src/node.js')).createNode;
 %}
 
-/* lexical grammar */
+
 %lex
+
 %%
-
-\s+                   /* skip whitespace */
-[0-9]+("."[0-9]+)?\b  return 'NUMBER'
-"+"                   return '+'
-"-"                   return '-'
-"-"                   return '-'
-"*"                   return '*'
-"/"                   return '/'
-"^"                   return '^'
-<<EOF>>               return 'EOF'
-.                     return 'INVALID'
-
+\s+                                             /* Skip */
+\d+                                             return 'NUMBER';
+[a-z][a-zA-Z0-9\_]*                             return 'ID';
+";"                                             return ';';
+"="                                             return '=';
+"+"|"-"|"*"|"/"|"^"|"!"                         return 'OPERATOR'
+<<EOF>>                                         return 'EOF';
 /lex
 
-/* operator associations and precedence */
 
 %left '+' '-'
 %left '*' '/'
 %left '^'
+%right '!'
+%right '%'
 
-%start expressions
+%start program
 
-%% /* language grammar */
+%%
 
-expressions
-    : e EOF
-        {return $1;}
+
+program
+    : statements EOF { 
+                    /*console.log(JSON.stringify($$));*/
+                    return $$;
+                    }
     ;
 
-e
-    : e '+' e
-        {$$ = buildTree($1,$2,$3);} 
-    
-    | e '-' e
-        {$$ = buildTree($1,$2,$3);}
+statements
+    : statement {$$ = [$1];}
+    | statements statement {$$ = $1, $$.push($2)}
+    ;
 
-    | e '*' e
-        {$$ = buildTree($1,$2,$3);}
+statement
+    : assignment ';'
+    | expressions ';'
+    ;
 
-    | e '/' e
-        {$$ = buildTree($1,$2,$3);}
+assignment
+    : '=' ID  TERMINALS  {$$ = createNode($1,'ASSIGN',[$2,$3]);}
+    ;
 
-    | e '^' e
-        {$$ = buildTree($1,$2,$3);}
+expressions
+    : expression
+    | OPERATOR TERMINALS expression { $$ = createNode($1,'OPERATOR',[$2,$3])}
+    | OPERATOR ID expression { $$ = createNode($1,'OPERATOR',[$2,$3])}
+    | OPERATOR expression expression { $$ = createNode($1,'OPERATOR',[$2,$3])}
+    ;
 
-    | NUMBER
-        {$$ = Number(yytext);}
+expression
+    : OPERATOR ID  ID { $$ = createNode($1,'OPERATOR',[$2,$3])}
+    | OPERATOR ID  TERMINALS { $$ = createNode($1,'OPERATOR',[$2,$3])}
+    | OPERATOR TERMINALS  ID { $$ = createNode($1,'OPERATOR',[$2,$3])}
+    | OPERATOR TERMINALS  TERMINALS { $$ = createNode($1,'OPERATOR',[$2,$3])}
+    ;
+
+
+TERMINALS
+    : NUMBER {$$= Number(yytext);}
     ;

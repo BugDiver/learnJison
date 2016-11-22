@@ -1,48 +1,13 @@
-var path = require('path');
-var convert = require('./toWord');
-
-var nodeTypes = { OPERATOR: "OPERATOR", NUMBER: "NUMBER" };
-var operators = { '+': ' plus ', '*': ' times ' , '-' : ' minus ','/' : ' divided by ', '^' : ' power '};
-
-var methods = {
-    '+': function(r, l) {
-        return r + l 
-    },
-    '*': function(r, l) {
-        return r * l 
-    },
-    '-': function(r, l) {
-        return r - l;
-    },
-    '/': function(r, l) {
-        return r / l;
-    },
-    '^': function(r, l) {
-        return Math.pow(r,l);
-    }
-
-}
-
-var Node = function Node(data, type) {
+var Node = function Node(data, type, children) {
     this.data = data;
     this.type = type;
+    this.children = children;
 };
 
-Node.prototype = {
-    toString: function() {
-        if (this.type == nodeTypes.OPERATOR) {
-            return operators[this.data];
-        } else if (this.type == nodeTypes.NUMBER) {
-            return convert(this.data);
-        }
-    },
 
-    evaluate: function(left, right) {
-        var left = left instanceof Node && left.data || left;
-        var right = right instanceof Node && right.data || right;
-        return methods[this.data](left, right);
-    }
-}
+var createNode = function (data, type, children) {
+    return new Node(data,type,children);
+};
 
-exports.nodeTypes = nodeTypes;
+exports.createNode = createNode;
 exports.Node = Node;
