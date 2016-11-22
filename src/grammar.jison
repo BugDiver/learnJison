@@ -51,9 +51,9 @@ assignment
 
 expressions
     : expression
-    | OPERATOR TERMINALS expression { $$ = createNode($1,'OPERATOR',[$2,$3])}
-    | OPERATOR ID expression { $$ = createNode($1,'OPERATOR',[$2,$3])}
-    | OPERATOR expression expression { $$ = createNode($1,'OPERATOR',[$2,$3])}
+    | OPERATOR TERMINALS expressions { $$ = createNode($1,'OPERATOR',[$2,$3])}
+    | OPERATOR ID expressions { $$ = createNode($1,'OPERATOR',[$2,$3])}
+    | OPERATOR expression expressions { $$ = createNode($1,'OPERATOR',[$2,$3])}
     ;
 
 expression

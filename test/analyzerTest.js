@@ -62,6 +62,38 @@ describe('SymeticsAnalyzer',function(){
 	 		expect(error).to.be.eql(new Error('z is not defined!'));
 		});
 
+		it('should analyze multiple assignments with multiple expressions',function(){
+	 		analyzer = new SymeticsAnalyzer();
+
+	 		var ast = [createNode('=','ASSIGN',['x',2]),
+	 				createNode('=','ASSIGN',['y',3]),
+	 				createNode('+','OPERATOR',['x','y']),
+	 				createNode('-','OPERATOR',['x',2])];
+
+	 		analyze(ast);
+
+	 		expect(error).to.be.undefiend;
+		});
+
+		it('should analyze multiple assignments with slightly complex expressions',function(){
+	 		analyzer = new SymeticsAnalyzer();
+
+	 		var ast = [createNode('=','ASSIGN',['x',2]),
+	 				createNode('=','ASSIGN',['y',3]),
+	 				createNode('=','ASSIGN',['z',3]),
+	 				createNode('+','OPERATOR',['x','y']),
+	 				createNode('+','OPERATOR',['x',
+	 					createNode('+','OPERATOR',['y',
+	 						createNode('+','OPERATOR',['z','y']
+	 						)]
+	 					)]
+	 				)];
+
+	 		analyze(ast);
+
+	 		expect(error).to.be.undefiend;
+		});
+
 	});
 	
 });

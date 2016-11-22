@@ -1,3 +1,5 @@
+var Node = require('./node.js').Node;
+
 var Converter = function() {
     this.jsCode = '';
 }
@@ -20,7 +22,14 @@ var addVariable = function(node) {
 }
 
 var addLog = function(node) {
-    return 'console.log(' + node.children[0] + node.data + node.children[1] + ');'
+    return 'console.log(' + resolve(node.children[0]) + node.data + resolve(node.children[1]) + ');'
+}
+
+var resolve = function(child){
+    if (child instanceof Node){
+        return resolve(child.children[0])+child.data+resolve(child.children[1]);
+    }
+    return child
 }
 
 module.exports = Converter;

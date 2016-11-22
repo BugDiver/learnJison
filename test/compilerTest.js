@@ -13,7 +13,7 @@ describe('Compiler',function(){
 						   = y 3;`
 
 		var expectedJsCode = "var x = 2;"+
-							  "var y = 3;"
+							  "var y = 3;";
 
 	 	var actualJsCode = compiler.compile(foolangCode);
 
@@ -25,7 +25,7 @@ describe('Compiler',function(){
 						   + x 2;`
 						   
 		var expectedJsCode = "var x = 2;"+
-							  "console.log(x+2);"
+							  "console.log(x+2);";
 
 	 	var actualJsCode = compiler.compile(foolangCode);
 
@@ -39,7 +39,39 @@ describe('Compiler',function(){
 						   
 		var expectedJsCode = "var x = 2;"+
 							 "var y = 3;"+
-							 "console.log(x+y);"
+							 "console.log(x+y);";
+
+	 	var actualJsCode = compiler.compile(foolangCode);
+
+	 	expect(expectedJsCode).to.be.equal(actualJsCode);
+	});
+
+	it('should compile expressions having multiple variables and multiple operator and return js code',function(){
+		var foolangCode = `= x 2;
+						   = y 3;
+						   + x + y 2;`
+						   
+		var expectedJsCode = "var x = 2;"+
+							 "var y = 3;"+
+							 "console.log(x+y+2);";
+
+	 	var actualJsCode = compiler.compile(foolangCode);
+
+	 	expect(expectedJsCode).to.be.equal(actualJsCode);
+	});
+
+	it('should compile expressions having multiple variables and multiple expressions and return js code',function(){
+		var foolangCode = `= x 2;
+						   = y 3;
+						   = z 3;
+						   + x + y 2;
+						   + x + y + z y;`
+						   
+		var expectedJsCode = "var x = 2;"+
+							 "var y = 3;"+
+							 "var z = 3;"+
+							 "console.log(x+y+2);"+
+							 "console.log(x+y+z+y);";
 
 	 	var actualJsCode = compiler.compile(foolangCode);
 
