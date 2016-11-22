@@ -1,7 +1,7 @@
-.gitignore
 runTest
 .idea/
 .DS_Store
 node_modules
-example
-
+*.osm
+*.osm.js
+main.js
