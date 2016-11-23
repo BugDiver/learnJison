@@ -46,21 +46,20 @@ statement
     ;
 
 assignment
-    : '=' ID  TERMINALS  {$$ = createNode($1,'ASSIGN',[$2,$3]);}
+    : ID '=' TERMINALS  {$$ = createNode($2,'ASSIGN',[$1,$3]);}
     ;
 
 expressions
     : expression
-    | OPERATOR TERMINALS expressions { $$ = createNode($1,'OPERATOR',[$2,$3])}
-    | OPERATOR ID expressions { $$ = createNode($1,'OPERATOR',[$2,$3])}
-    | OPERATOR expression expressions { $$ = createNode($1,'OPERATOR',[$2,$3])}
+    | TERMINALS OPERATOR expressions { $$ = createNode($2,'OPERATOR',[$1,$3])}
+    | ID OPERATOR expressions { $$ = createNode($2,'OPERATOR',[$1,$3])}
     ;
 
 expression
-    : OPERATOR ID  ID { $$ = createNode($1,'OPERATOR',[$2,$3])}
-    | OPERATOR ID  TERMINALS { $$ = createNode($1,'OPERATOR',[$2,$3])}
-    | OPERATOR TERMINALS  ID { $$ = createNode($1,'OPERATOR',[$2,$3])}
-    | OPERATOR TERMINALS  TERMINALS { $$ = createNode($1,'OPERATOR',[$2,$3])}
+    : ID  OPERATOR ID { $$ = createNode($2,'OPERATOR',[$1,$3])}
+    | ID OPERATOR  TERMINALS { $$ = createNode($2,'OPERATOR',[$1,$3])}
+    | TERMINALS OPERATOR  ID { $$ = createNode($2,'OPERATOR',[$1,$3])}
+    | TERMINALS OPERATOR  TERMINALS { $$ = createNode($2,'OPERATOR',[$1,$3])}
     ;
 
 
