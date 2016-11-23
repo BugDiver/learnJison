@@ -18,11 +18,19 @@ Converter.prototype.convert = function(ast) {
 
 
 var addVariable = function(node) {
-    return 'var ' + node.children[0] + ' = ' + node.children[1] + ';';
+    return 'var ' + resolveIdentifier(node.children[0])
+         + ' = ' + resolveIdentifier(node.children[1]) + ';';
 }
 
 var addLog = function(node) {
     return 'console.log(' + resolve(node.children[0]) + node.data + resolve(node.children[1]) + ');'
+}
+
+var resolveIdentifier = function(child){
+    if (child.type == 'ID') {
+        return child.data;
+    }
+    return child;
 }
 
 var resolve = function(child){

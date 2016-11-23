@@ -27,6 +27,18 @@ describe('Converter',function(){
 		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
 		});
 
+		it('should convert a tree consisting a multiple assignment to another variable in js code',function(){
+			var converter = new Converter();
+		 	var ast = [createNode('=','ASSIGN',['x',2]),
+		 				createNode('=','ASSIGN',['y',createNode('x','ID')])];
+
+		 	var expectedJsCode = 'var x = 2;'+
+		 						 'var y = x;';
+
+		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
+		});
+
+
 		it('should convert a tree consisting a multiple assignment and an expression in js code',function(){
 			var converter = new Converter();
 		 	var ast = [createNode('=','ASSIGN',['x',2]),

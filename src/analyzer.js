@@ -29,7 +29,12 @@ SymenticsAnalyzer.prototype = {
 		})
 	},
 	declareVar : function(key,value){
-		this.symbolTable[key] = value;
+		if (value.type == 'ID'){
+			this.symbolTable[key] = this.symbolTable[value.data];
+		}
+		else{
+			this.symbolTable[key] = value;
+		}
 	}
 };
 

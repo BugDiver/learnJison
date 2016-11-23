@@ -47,7 +47,8 @@ statement
 
 assignment
     : ID '=' TERMINALS  {$$ = createNode($2,'ASSIGN',[$1,$3]);}
-    ;
+    | ID '=' ID {$$ = createNode($2,'ASSIGN',[$1,createNode($3,'ID')]);}
+    ; 
 
 expressions
     : expression

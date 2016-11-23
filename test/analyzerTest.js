@@ -17,6 +17,11 @@ describe('SymeticsAnalyzer',function(){
 		}
 	}
 
+	afterEach(function(){
+		analyzer = undefined;
+		error = undefined;
+	})
+
 	describe('analyze',function(){
 		it('should analyze simple assignments',function(){
 	 		analyzer = new SymeticsAnalyzer();
@@ -25,7 +30,7 @@ describe('SymeticsAnalyzer',function(){
 
 	 		analyze(ast);
 
-	 		expect(error).to.be.undefiend;
+	 		expect(error).to.be.undefined;
 		});	
 
 		it('should analyze multiple assignments',function(){
@@ -36,7 +41,7 @@ describe('SymeticsAnalyzer',function(){
 
 	 		analyze(ast);
 
-	 		expect(error).to.be.undefiend;
+	 		expect(error).to.be.undefined;
 		});
 
 		it('should analyze multiple assignments with expressions',function(){
@@ -48,7 +53,7 @@ describe('SymeticsAnalyzer',function(){
 
 	 		analyze(ast);
 
-	 		expect(error).to.be.undefiend;
+	 		expect(error).to.be.undefined;
 		});
 
 		it('should throw error if a used variable is not assigned',function(){
@@ -65,6 +70,30 @@ describe('SymeticsAnalyzer',function(){
 
 		});
 
+		it('should analyze variabale assignment to another variable',function(){
+	 		analyzer = new SymeticsAnalyzer();
+
+	 		ast = [createNode("=",'ASSIGN',['x',2]),
+	 				createNode("=",'ASSIGN',['y','x']),
+	 				createNode('+','ASSIGN',['x','y'])];
+
+	 		analyze(ast);
+
+	 		expect(error).to.be.undefined;
+		});
+
+		it('should throw error if a undefined variabale assign to another variable',function(){
+	 		analyzer = new SymeticsAnalyzer();
+
+	 		ast = [createNode("=",'ASSIGN',['x',2]),
+	 				createNode("=",'ASSIGN',['y',createNode('z','ID')]),
+	 				createNode('+','OPERATOR',['x','y'])];
+
+	 		analyze(ast);
+
+	 		expect(error.constructor).to.be.eql(CompilationError);
+		});
+
 		it('should analyze multiple assignments with multiple expressions',function(){
 	 		analyzer = new SymeticsAnalyzer();
 
@@ -75,7 +104,7 @@ describe('SymeticsAnalyzer',function(){
 
 	 		analyze(ast);
 
-	 		expect(error).to.be.undefiend;
+	 		expect(error).to.be.undefined;
 		});
 
 		it('should analyze multiple assignments with slightly complex expressions',function(){
@@ -94,7 +123,7 @@ describe('SymeticsAnalyzer',function(){
 
 	 		analyze(ast);
 
-	 		expect(error).to.be.undefiend;
+	 		expect(error).to.be.undefined;
 		});
 
 	});
