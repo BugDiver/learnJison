@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A repo to learn jison",
   "scripts": {
-    "test": "./node_modules/.bin/mocha "
+    "test": "./node_modules/.bin/mocha --recursive"
   },
   "author": "BugDiver",
   "license": "ISC",
