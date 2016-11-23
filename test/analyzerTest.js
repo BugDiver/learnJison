@@ -1,19 +1,41 @@
 var expect = require('chai').expect;
 
-var createNode = require('../src/node.js').createNode;
+
+var NumberNode = require('../src/nodes/numberNode.js');
+var OperatorNode = require('../src/nodes/operatorNode.js');
+var AssingmentNode = require('../src/nodes/assignmentNode.js');
+var IDNode = require('../src/nodes/idNode.js');
+
 var SymeticsAnalyzer = require('../src/analyzer.js');
-var CompilationError = require('../src/error.js');
+var ReferenceError = require('../src/error.js');
 
 describe('SymeticsAnalyzer',function(){
+
 	var analyzer;
 	var error;
-	
+	var location = {first_line: 1,first_column : 1};
+	var x = new IDNode('x',location);
+	var y = new IDNode('y',location);
+	var z = new IDNode('z',location);
+	var one = new NumberNode(1);
+	var two = new NumberNode(2);
+	var three = new NumberNode(3);
+	var assignX1 = new AssingmentNode(x,one);
+	var assignY2 = new AssingmentNode(y,two);
+	var assignZ3 = new AssingmentNode(z,three);
+	var assignYX = new AssingmentNode(y,x);
+	var assignYZ = new AssingmentNode(y,z);
+
 
 	var analyze = function(ast){
 		try{
 			analyzer.analyze(ast)
 		}catch(e){
-			error = e;
+			if (e.constructor.name == 'ReferenceError') {
+				error = e;
+			}else{
+				throw e;
+			}
 		}
 	}
 
@@ -25,8 +47,7 @@ describe('SymeticsAnalyzer',function(){
 	describe('analyze',function(){
 		it('should analyze simple assignments',function(){
 	 		analyzer = new SymeticsAnalyzer();
-
-	 		var ast = [createNode("=",'ASSIGN',['x',2])];
+	 		var ast = [assignX1];
 
 	 		analyze(ast);
 
@@ -35,9 +56,7 @@ describe('SymeticsAnalyzer',function(){
 
 		it('should analyze multiple assignments',function(){
 	 		analyzer = new SymeticsAnalyzer();
-
-	 		var ast = [createNode("=",'ASSIGN',['x',2]),
-	 				createNode("=",'ASSIGN',['y',3])];
+	 		var ast = [assignX1,assignY2];
 
 	 		analyze(ast);
 
@@ -46,10 +65,8 @@ describe('SymeticsAnalyzer',function(){
 
 		it('should analyze multiple assignments with expressions',function(){
 	 		analyzer = new SymeticsAnalyzer();
-
-	 		var ast = [createNode("=",'ASSIGN',['x',2]),
-	 				createNode("=",'ASSIGN',['y',3]),
-	 				createNode("+",'OPERATOR',['x','y'])];
+	 		var plus = new OperatorNode('+',[x,y]);
+	 		var ast = [assignX1,assignY2,plus];
 
 	 		analyze(ast);
 
@@ -58,24 +75,21 @@ describe('SymeticsAnalyzer',function(){
 
 		it('should throw error if a used variable is not assigned',function(){
 	 		analyzer = new SymeticsAnalyzer();
-
-	 		ast = [createNode("=",'ASSIGN',['x',2]),
-	 				createNode("=",'ASSIGN',['y',3]),
-	 				createNode("+",'OPERATOR',['x','z'])];
+	 		var plus = new OperatorNode('+',[x,z]);
+	 		var ast = [assignX1,assignY2,plus];
 
 	 		analyze(ast);
 
-	 		expect(error.constructor).to.be.eql(CompilationError);
-	 		expect(error.error.message).to.be.eql('z is not defined!')
+	 		expect(error.constructor).to.be.eql(ReferenceError);
+	 		expect(error.message).to.be.eql('z is not defined!');
+	 		expect(error.stack).to.be.eql(`ReferenceError: z is not defined!\n\t\tat :1:1`)
 
 		});
 
 		it('should analyze variabale assignment to another variable',function(){
 	 		analyzer = new SymeticsAnalyzer();
-
-	 		ast = [createNode("=",'ASSIGN',['x',2]),
-	 				createNode("=",'ASSIGN',['y','x']),
-	 				createNode('+','ASSIGN',['x','y'])];
+	 		var plus = new OperatorNode('+',[x,y]);
+	 		var ast = [assignX1,assignYX,plus];
 
 	 		analyze(ast);
 
@@ -84,23 +98,19 @@ describe('SymeticsAnalyzer',function(){
 
 		it('should throw error if a undefined variabale assign to another variable',function(){
 	 		analyzer = new SymeticsAnalyzer();
-
-	 		ast = [createNode("=",'ASSIGN',['x',2]),
-	 				createNode("=",'ASSIGN',['y',createNode('z','ID')]),
-	 				createNode('+','OPERATOR',['x','y'])];
+	 		var plus = new OperatorNode('+',[x,y]);
+	 		var ast = [assignX1,assignYZ,plus];
 
 	 		analyze(ast);
 
-	 		expect(error.constructor).to.be.eql(CompilationError);
+	 		expect(error.constructor).to.be.eql(ReferenceError);
 		});
 
 		it('should analyze multiple assignments with multiple expressions',function(){
 	 		analyzer = new SymeticsAnalyzer();
-
-	 		var ast = [createNode('=','ASSIGN',['x',2]),
-	 				createNode('=','ASSIGN',['y',3]),
-	 				createNode('+','OPERATOR',['x','y']),
-	 				createNode('-','OPERATOR',['x',2])];
+	 		var plus = new OperatorNode('+',[x,y]);
+	 		var minus = new OperatorNode('-',[x,two]);
+	 		var ast = [assignX1,assignY2,plus,minus];
 
 	 		analyze(ast);
 
@@ -109,17 +119,9 @@ describe('SymeticsAnalyzer',function(){
 
 		it('should analyze multiple assignments with slightly complex expressions',function(){
 	 		analyzer = new SymeticsAnalyzer();
-
-	 		var ast = [createNode('=','ASSIGN',['x',2]),
-	 				createNode('=','ASSIGN',['y',3]),
-	 				createNode('=','ASSIGN',['z',3]),
-	 				createNode('+','OPERATOR',['x','y']),
-	 				createNode('+','OPERATOR',['x',
-	 					createNode('+','OPERATOR',['y',
-	 						createNode('+','OPERATOR',['z','y']
-	 						)]
-	 					)]
-	 				)];
+	 		var plus = new OperatorNode('+',[x,y]);
+	 		var nestedplus = new OperatorNode('+',[x,new OperatorNode('+',[y,new OperatorNode('+',[z,y])])])
+	 		var ast = [assignX1,assignY2,assignZ3,plus,nestedplus];
 
 	 		analyze(ast);
 

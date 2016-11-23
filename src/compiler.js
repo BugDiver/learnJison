@@ -1,5 +1,4 @@
 var parser = require('./parser.js');
-var Node = require('./node.js').Node;
 var SymenticsAnalyzer = require('./analyzer.js')
 var Converter = require('./converter.js');
 

@@ -1,6 +1,6 @@
 {
-  "name": "learn-jison",
-  "version": "1.0.0",
+  "name": "owwsome",
+  "version": "0.0.1",
   "description": "A repo to learn jison",
   "scripts": {
     "test": "./node_modules/.bin/mocha --recursive"

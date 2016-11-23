@@ -1,21 +1,25 @@
 %{
+    location = undefined;
     var path = require('path');
-    var createNode = require(path.resolve('./src/node.js')).createNode;
+    var NumberNode = require(path.resolve('./src/nodes/numberNode.js'));
+    var OperatorNode = require(path.resolve('./src/nodes/operatorNode.js'));
+    var AssingmentNode = require(path.resolve('./src/nodes/assignmentNode.js'));
+    var IDNode = require(path.resolve('./src/nodes/idNode.js'));
 %}
 
-
 %lex
-
 %%
 \s+                                             /* Skip */
 \d+                                             return 'NUMBER';
-[a-z][a-zA-Z0-9\_]*                             return 'ID';
+"if"                                            return 'if'
+[a-z][a-zA-Z0-9\_]*                             location = yylloc;return 'ID';
 ";"                                             return ';';
 "="                                             return '=';
 "+"|"-"|"*"|"/"|"^"|"!"                         return 'OPERATOR'
 <<EOF>>                                         return 'EOF';
 /lex
 
+/* operator associations and precedence */
 
 %left '+' '-'
 %left '*' '/'
@@ -23,16 +27,13 @@
 %right '!'
 %right '%'
 
-%start program
-
-%%
-
+%start program%%
 
 program
     : statements EOF { 
-                    /*console.log(JSON.stringify($$));*/
+                    // console.log(JSON.stringify($$));
                     return $$;
-                    }
+       }
     ;
 
 statements
@@ -46,24 +47,27 @@ statement
     ;
 
 assignment
-    : ID '=' TERMINALS  {$$ = createNode($2,'ASSIGN',[$1,$3]);}
-    | ID '=' ID {$$ = createNode($2,'ASSIGN',[$1,createNode($3,'ID')]);}
+    : identifier '=' terminals  {$$ = new AssingmentNode($1,$3);}
+    | identifier '=' identifier {$$ = createNode(new AssingmentNode($1,$3));}
     ; 
 
 expressions
     : expression
-    | TERMINALS OPERATOR expressions { $$ = createNode($2,'OPERATOR',[$1,$3])}
-    | ID OPERATOR expressions { $$ = createNode($2,'OPERATOR',[$1,$3])}
+    | terminals OPERATOR expressions { $$ = new OperatorNode($2,[$1,$3])}
+    | identifier OPERATOR expressions { $$ = new OperatorNode($2,[$1,$3])}
     ;
 
 expression
-    : ID  OPERATOR ID { $$ = createNode($2,'OPERATOR',[$1,$3])}
-    | ID OPERATOR  TERMINALS { $$ = createNode($2,'OPERATOR',[$1,$3])}
-    | TERMINALS OPERATOR  ID { $$ = createNode($2,'OPERATOR',[$1,$3])}
-    | TERMINALS OPERATOR  TERMINALS { $$ = createNode($2,'OPERATOR',[$1,$3])}
+    : identifier  OPERATOR identifier { $$ = new OperatorNode($2,[$1,$3])}
+    | identifier OPERATOR  terminals { $$ = new OperatorNode($2,[$1,$3])}
+    | terminals OPERATOR  identifier { $$ = new OperatorNode($2,[$1,$3])}
+    | terminals OPERATOR  terminals { $$ = new OperatorNode($2,[$1,$3])}
     ;
 
+terminals
+    : NUMBER {$$= new NumberNode(Number(yytext));}
+    ;
 
-TERMINALS
-    : NUMBER {$$= Number(yytext);}
+identifier
+    : ID {$$ = new IDNode(yytext,location)}
     ;

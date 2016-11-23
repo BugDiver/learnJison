@@ -1,5 +1,9 @@
-var CompilationError = require('./error.js');
-var Node = require('./node.js').Node;
+var OperatorNode = require('./nodes/operatorNode.js');
+var NumberNode = require('./nodes/numberNode.js');
+var IDNode = require('./nodes/idNode.js');
+var AssingNode = require('./nodes/assignmentNode.js');
+var ReferenceError = require('./error.js');
+
 
 var SymenticsAnalyzer = function(){
 	this.symbolTable = {};
@@ -9,28 +13,28 @@ SymenticsAnalyzer.prototype = {
 	analyze : function(ast){
 		for (var i = 0; i < ast.length; i++) {
 			var node = ast[i];
-			if (node.type == 'ASSIGN') {
-				this.declareVar(node.children[0],node.children[1]);
+			if (node instanceof AssingNode) {
+				this.declareVar(node.key,node.value);
 			}
-			if (node.type == 'OPERATOR') {
-				this.checkVariables(node.children);
+			if (node instanceof OperatorNode) {
+				this.checkVariables(node.args);
 			}
 		}
 	},
 	checkVariables : function(children){
-		var _self = this;
-		children.forEach(function(child){
-			if (child.constructor ==  Node) {
-				_self.checkVariables(child.children);
+		for (var i = 0;i < children.length; i++) {
+			var child = children[i];
+			if (child.constructor ==  OperatorNode) {
+				this.checkVariables(child.args);
 			}
-			else if (!_self.symbolTable[child] && child.constructor != Number) {
-				throw new CompilationError(child+" is not defined!");
+			else if (!this.symbolTable[child.value] && child.constructor != NumberNode) {
+				throw new ReferenceError(child.value+" is not defined!",child.getLocation());
 			}
-		})
+		}
 	},
 	declareVar : function(key,value){
-		if (value.type == 'ID'){
-			this.symbolTable[key] = this.symbolTable[value.data];
+		if (value instanceof IDNode){
+			this.symbolTable[key] = this.symbolTable[value.value];
 		}
 		else{
 			this.symbolTable[key] = value;

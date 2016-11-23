@@ -1,6 +1,16 @@
-var CompilationError = function(msg){
-	this.error = new Error(msg);
-	this.constructor.name = 'CompilationError';
+var ReferenceError = function ReferenceError(message,loc){
+    var error = new Error(message);
+    error.constructor = ReferenceError;
+    error.stack = formatStack(message,loc);
+    return error;
+};
+
+
+formatStack = function(msg,loc){
+	return `ReferenceError: ${msg}
+		at :${loc.line}:${loc.char}`
 }
 
-module.exports = CompilationError;
+
+
+module.exports = ReferenceError;
