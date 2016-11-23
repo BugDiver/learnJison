@@ -47,24 +47,24 @@ statement
     ;
 
 assignment
-    : identifier '=' terminals  {$$ = new AssingmentNode($1,$3);}
-    | identifier '=' identifier {$$ = createNode(new AssingmentNode($1,$3));}
+    : identifier '=' number  {$$ = new AssingmentNode($1,$3);}
+    | identifier '=' identifier {$$ = new AssingmentNode($1,$3);}
     ; 
 
 expressions
     : expression
-    | terminals OPERATOR expressions { $$ = new OperatorNode($2,[$1,$3])}
+    | number OPERATOR expressions { $$ = new OperatorNode($2,[$1,$3])}
     | identifier OPERATOR expressions { $$ = new OperatorNode($2,[$1,$3])}
     ;
 
 expression
     : identifier  OPERATOR identifier { $$ = new OperatorNode($2,[$1,$3])}
-    | identifier OPERATOR  terminals { $$ = new OperatorNode($2,[$1,$3])}
-    | terminals OPERATOR  identifier { $$ = new OperatorNode($2,[$1,$3])}
-    | terminals OPERATOR  terminals { $$ = new OperatorNode($2,[$1,$3])}
+    | identifier OPERATOR  number { $$ = new OperatorNode($2,[$1,$3])}
+    | number OPERATOR  identifier { $$ = new OperatorNode($2,[$1,$3])}
+    | number OPERATOR  number { $$ = new OperatorNode($2,[$1,$3])}
     ;
 
-terminals
+number
     : NUMBER {$$= new NumberNode(Number(yytext));}
     ;
 
