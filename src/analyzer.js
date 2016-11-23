@@ -1,3 +1,4 @@
+var CompilationError = require('./error.js');
 var Node = require('./node.js').Node;
 
 var SymenticsAnalyzer = function(){
@@ -23,7 +24,7 @@ SymenticsAnalyzer.prototype = {
 				_self.checkVariables(child.children);
 			}
 			else if (!_self.symbolTable[child] && child.constructor != Number) {
-				throw new Error(child+" is not defined!");
+				throw new CompilationError(child+" is not defined!");
 			}
 		})
 	},

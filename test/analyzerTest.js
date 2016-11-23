@@ -2,6 +2,7 @@ var expect = require('chai').expect;
 
 var createNode = require('../src/node.js').createNode;
 var SymeticsAnalyzer = require('../src/analyzer.js');
+var CompilationError = require('../src/error.js');
 
 describe('SymeticsAnalyzer',function(){
 	var analyzer;
@@ -59,7 +60,9 @@ describe('SymeticsAnalyzer',function(){
 
 	 		analyze(ast);
 
-	 		expect(error).to.be.eql(new Error('z is not defined!'));
+	 		expect(error.constructor).to.be.eql(CompilationError);
+	 		expect(error.error.message).to.be.eql('z is not defined!')
+
 		});
 
 		it('should analyze multiple assignments with multiple expressions',function(){
