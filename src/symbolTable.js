@@ -7,7 +7,7 @@ SymbolTable.prototype = {
 		this.table[symbol] = value;
 	},
 	hasSymbol : function(symbol){
-		return this.table.hasOwnProperty(symbol);
+		return !!this.table[symbol];
 	},
 	deleteSymbol : function(symbol){
 		return delete this.table[symbol];

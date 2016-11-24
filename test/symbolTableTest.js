@@ -56,4 +56,12 @@ describe('SymbolTable',function(){
 
 	 	expect(table.hasSymbol('y')).to.be.false;
 	});
+
+	it('hasSymbol for key with value undefined gives false' ,function(){
+	 	var table = new SymbolTable();
+	 	table.addSymbol('x',undefined);
+	 	
+	 	expect(table.hasSymbol('x')).to.be.false;
+	});
+
 });
