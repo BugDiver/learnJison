@@ -5,6 +5,8 @@
     var OperatorNode = require(path.resolve('./src/nodes/operatorNode.js'));
     var AssingmentNode = require(path.resolve('./src/nodes/assignmentNode.js'));
     var IDNode = require(path.resolve('./src/nodes/idNode.js'));
+    var BooleanNode = require(path.resolve('./src/nodes/booleanNode.js'));
+    var IfNode = require(path.resolve('./src/nodes/ifNode.js'));
 %}
 
 %lex
@@ -12,7 +14,11 @@
 \s+                                             /* Skip */
 \d+                                             return 'NUMBER';
 "if"                                            return 'if'
+"true"|"fasle"                                  return 'BOOLEAN'
 [a-z][a-zA-Z0-9\_]*                             location = yylloc;return 'ID';
+' '                                             return 'SPACE'
+"{"                                             return '{';
+"}"                                             return '}';
 ";"                                             return ';';
 "="                                             return '=';
 "+"|"-"|"*"|"/"|"^"|"!"                         return 'OPERATOR'
@@ -44,6 +50,11 @@ statements
 statement
     : assignment ';'
     | expressions ';'
+    | condition ';'
+    ;
+
+condition
+    : 'if' boolean block {$$ = new IfNode($2,$3) }
     ;
 
 assignment
@@ -62,6 +73,14 @@ expression
     | identifier OPERATOR  number { $$ = new OperatorNode($2,[$1,$3])}
     | number OPERATOR  identifier { $$ = new OperatorNode($2,[$1,$3])}
     | number OPERATOR  number { $$ = new OperatorNode($2,[$1,$3])}
+    ;
+
+block
+    : '{' statements '}' {$$ = $2}
+    ;
+
+boolean
+    : BOOLEAN {$$ = new BooleanNode(yytext)}
     ;
 
 number
