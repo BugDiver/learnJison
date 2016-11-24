@@ -4,6 +4,8 @@ var NumberNode = require('../src/nodes/numberNode.js');
 var OperatorNode = require('../src/nodes/operatorNode.js');
 var AssingmentNode = require('../src/nodes/assignmentNode.js');
 var IDNode = require('../src/nodes/idNode.js');
+var BooleanNode = require('../src/nodes/booleanNode.js');
+var IfNode = require('../src/nodes/ifNode.js');
 var Converter = require('../src/converter.js');
 
 
@@ -21,7 +23,7 @@ describe('Converter',function(){
 	var assignZ3 = new AssingmentNode(z,three);
 	var assignYX = new AssingmentNode(y,x);
 	var assignYZ = new AssingmentNode(y,z);
-
+	var _true = new BooleanNode('true');
 
 	describe('converte',function(){
 
@@ -81,6 +83,36 @@ describe('Converter',function(){
 		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
 		});
 
+		it('should convert a tree consisting a conditional in js code',function(){
+			var converter = new Converter();
+			var plus = new OperatorNode('+',[x,y]);
+			var cond = new IfNode(_true,[plus])
+
+	 		var ast = [assignX1,assignY2,cond];
+
+		 	var expectedJsCode = 'var x = 1;'+
+		 						 'var y = 2;'+
+		 						 'if(true){console.log(x+y);}';
+		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
+		});
+
+		it('should convert a tree consisting a conditional with comlex expression in js code',function(){
+			var converter = new Converter();
+			var plus = new OperatorNode('+',[x,y]);
+	 		var nestedplus = new OperatorNode('+',[x,new OperatorNode('+',[y,new OperatorNode('+',[z,y])])])
+			var cond = new IfNode(_true,[plus,assignZ3,nestedplus])
+			
+	 		var ast = [assignX1,assignY2,cond];
+
+		 	var expectedJsCode = 'var x = 1;'+
+		 						 'var y = 2;'+
+		 						 'if(true){'+
+		 						 'console.log(x+y);'+
+		 						 'var z = 3;'+
+		 						 'console.log(x+y+z+y);'+
+		 						 '}';
+		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
+		});
 
 
 	});

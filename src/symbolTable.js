@@ -1,5 +1,6 @@
 var SymbolTable = function(parent){
-	this.table = createParent(parent);
+	this.parent = parent || {};
+	this.table = createParent(this.parent);
 }
 
 SymbolTable.prototype = {
@@ -17,6 +18,9 @@ SymbolTable.prototype = {
 	},
 	createChild : function(){
 		return new SymbolTable(this.table);
+	},
+	getParent : function(){
+		return new SymbolTable(this.parent);
 	}
 }
 

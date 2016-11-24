@@ -5,9 +5,11 @@ var NumberNode = require('../src/nodes/numberNode.js');
 var OperatorNode = require('../src/nodes/operatorNode.js');
 var AssingmentNode = require('../src/nodes/assignmentNode.js');
 var IDNode = require('../src/nodes/idNode.js');
+var IfNode = require('../src/nodes/ifNode.js');
+var BooleanNode = require('../src/nodes/booleanNode.js');
 
 var SymeticsAnalyzer = require('../src/analyzer.js');
-var ReferenceError = require('../src/error.js');
+var CompilationError = require('../src/error.js');
 
 describe('SymeticsAnalyzer',function(){
 
@@ -25,13 +27,13 @@ describe('SymeticsAnalyzer',function(){
 	var assignZ3 = new AssingmentNode(z,three);
 	var assignYX = new AssingmentNode(y,x);
 	var assignYZ = new AssingmentNode(y,z);
-
+	var _true = new BooleanNode('true');
 
 	var analyze = function(ast){
 		try{
 			analyzer.analyze(ast)
 		}catch(e){
-			if (e.constructor.name == 'ReferenceError') {
+			if (e.constructor.name == 'CompilationError') {
 				error = e;
 			}else{
 				throw e;
@@ -80,9 +82,9 @@ describe('SymeticsAnalyzer',function(){
 
 	 		analyze(ast);
 
-	 		expect(error.constructor).to.be.eql(ReferenceError);
+	 		expect(error.constructor).to.be.eql(CompilationError);
 	 		expect(error.message).to.be.eql('z is not defined!');
-	 		expect(error.stack).to.be.eql(`ReferenceError: z is not defined!\n\t\tat :1:1`)
+	 		expect(error.stack).to.be.eql(`CompilationError: z is not defined!\n\t\tat :1:1`)
 
 		});
 
@@ -103,7 +105,7 @@ describe('SymeticsAnalyzer',function(){
 
 	 		analyze(ast);
 
-	 		expect(error.constructor).to.be.eql(ReferenceError);
+	 		expect(error.constructor).to.be.equal(CompilationError);
 		});
 
 		it('should analyze multiple assignments with multiple expressions',function(){
@@ -117,11 +119,21 @@ describe('SymeticsAnalyzer',function(){
 	 		expect(error).to.be.undefined;
 		});
 
-		it('should analyze multiple assignments with slightly complex expressions',function(){
+		it('should analyze conditional statements',function(){
 	 		analyzer = new SymeticsAnalyzer();
-	 		var plus = new OperatorNode('+',[x,y]);
-	 		var nestedplus = new OperatorNode('+',[x,new OperatorNode('+',[y,new OperatorNode('+',[z,y])])])
-	 		var ast = [assignX1,assignY2,assignZ3,plus,nestedplus];
+	 		var cond = new IfNode(_true,[assignX1]);
+	 		var ast = [cond];
+
+	 		analyze(ast);
+
+	 		expect(error).to.be.undefined;
+		});
+
+		it('should analyze scoping for conditional statements',function(){
+	 		analyzer = new SymeticsAnalyzer();
+	 		var cond = new IfNode(_true,[assignY2]);
+	 		var plus = new OperatorNode('+',[x,y])
+	 		var ast = [assignX1,cond,plus];
 
 	 		analyze(ast);
 

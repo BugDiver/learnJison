@@ -78,4 +78,26 @@ describe('Compiler',function(){
 	 	expect(expectedJsCode).to.be.equal(actualJsCode);
 	});
 	
+	it('should compile expressions having conditionals return js code',function(){
+		var foolangCode = `x = 2;
+						   if true {
+						   		y = 3;
+						   };
+						   z = 3;
+						   x + y + 2;
+						   x + y + z + y;`
+						   
+		var expectedJsCode = "var x = 2;"+
+							 "if(true){"+
+							 "var y = 3;"+
+							 "}"+
+							 "var z = 3;"+
+							 "console.log(x+y+2);"+
+							 "console.log(x+y+z+y);";
+
+	 	var actualJsCode = compiler.compile(foolangCode);
+
+	 	expect(expectedJsCode).to.be.equal(actualJsCode);
+	});
+
 });
