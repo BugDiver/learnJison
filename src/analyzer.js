@@ -20,6 +20,7 @@ SymenticsAnalyzer.prototype = {
 			}else if (node instanceof IfNode) {
 				this.table = this.table.createChild();
 				this.analyze(node.block);
+				this.table = this.table.getParent();
 			}
 			else if (node instanceof OperatorNode) {
 				this.checkVariables(node.args);

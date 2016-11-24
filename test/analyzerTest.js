@@ -137,7 +137,7 @@ describe('SymeticsAnalyzer',function(){
 
 	 		analyze(ast);
 
-	 		expect(error).to.be.undefined;
+	 		expect(error.constructor).to.be.equal(CompilationError);
 		});
 
 	});

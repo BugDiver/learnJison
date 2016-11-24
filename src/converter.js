@@ -5,14 +5,14 @@ var Converter = function() {
 }
 
 Converter.prototype.convert = function(ast) {
-    var _self = this;
-    ast.forEach(function(child){
-        if (child instanceof OperatorNode)
-            _self.jsCode += addLog(child.toString());
-        else
-            _self.jsCode += child.toString();
-
-    })
+    for (var i = 0; i < ast.length; i++) {
+        var node = ast[i];
+        if (node instanceof OperatorNode) {
+            this.jsCode += addLog(node.toString());
+        }else{
+            this.jsCode += node.toString();
+        }
+    }
     return this.jsCode;
 }
 
