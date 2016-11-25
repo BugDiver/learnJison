@@ -6,6 +6,7 @@ var AssingmentNode = require('../src/nodes/assignmentNode.js');
 var IDNode = require('../src/nodes/idNode.js');
 var BooleanNode = require('../src/nodes/booleanNode.js');
 var IfNode = require('../src/nodes/ifNode.js');
+var ElseNode = require('../src/nodes/elseNode.js');
 var Converter = require('../src/converter.js');
 
 
@@ -59,7 +60,7 @@ describe('Converter',function(){
 
 		it('should convert a tree consisting a multiple assignment and an expression in js code',function(){
 			var converter = new Converter();
-			var plus = new OperatorNode('+',[x,y])
+			var plus = new OperatorNode('+',[x,y]);
 		 	var ast = [assignX1,assignY2,plus];
 
 		 	var expectedJsCode = 'var x = 1;'+
@@ -71,7 +72,7 @@ describe('Converter',function(){
 		it('should convert a tree consisting a multiple assignment and a complex expression in js code',function(){
 			var converter = new Converter();
 			var plus = new OperatorNode('+',[x,y]);
-	 		var nestedplus = new OperatorNode('+',[x,new OperatorNode('+',[y,new OperatorNode('+',[z,y])])])
+	 		var nestedplus = new OperatorNode('+',[x,new OperatorNode('+',[y,new OperatorNode('+',[z,y])])]);
 
 	 		var ast = [assignX1,assignY2,assignZ3,plus,nestedplus];
 
@@ -86,7 +87,7 @@ describe('Converter',function(){
 		it('should convert a tree consisting a conditional in js code',function(){
 			var converter = new Converter();
 			var plus = new OperatorNode('+',[x,y]);
-			var cond = new IfNode(_true,[plus])
+			var cond = new IfNode(_true,[plus]);
 
 	 		var ast = [assignX1,assignY2,cond];
 
@@ -99,8 +100,8 @@ describe('Converter',function(){
 		it('should convert a tree consisting a conditional with comlex expression in js code',function(){
 			var converter = new Converter();
 			var plus = new OperatorNode('+',[x,y]);
-	 		var nestedplus = new OperatorNode('+',[x,new OperatorNode('+',[y,new OperatorNode('+',[z,y])])])
-			var cond = new IfNode(_true,[plus,assignZ3,nestedplus])
+	 		var nestedplus = new OperatorNode('+',[x,new OperatorNode('+',[y,new OperatorNode('+',[z,y])])]);
+			var cond = new IfNode(_true,[plus,assignZ3,nestedplus]);
 			
 	 		var ast = [assignX1,assignY2,cond];
 
@@ -114,6 +115,28 @@ describe('Converter',function(){
 		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
 		});
 
+		it('should convert a tree consisting a if and else  in js code',function(){
+			var converter = new Converter();
+			var plus = new OperatorNode('+',[x,y]);
+	 		var nestedplus = new OperatorNode('+',[x,new OperatorNode('+',[y,new OperatorNode('+',[z,y])])]);
+			var _if = new IfNode(_true,[plus,assignZ3,nestedplus]);
+			var _else = new ElseNode([assignYX,plus]);
+
+	 		var ast = [assignX1,assignY2,[_if,_else]];
+
+		 	var expectedJsCode = 'var x = 1;'+
+		 						 'var y = 2;'+
+		 						 'if(true){'+
+		 						 	'console.log(x+y);'+
+			 						'var z = 3;'+
+			 						'console.log(x+y+z+y);'+
+		 						 '}else{'+
+			 						'var y = x;'+
+			 						'console.log(x+y);'+
+		 						 '}';
+
+		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
+		});
 
 	});
 });
