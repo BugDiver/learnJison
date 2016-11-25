@@ -7,6 +7,7 @@
     var IDNode = require(path.resolve('./src/nodes/idNode.js'));
     var BooleanNode = require(path.resolve('./src/nodes/booleanNode.js'));
     var IfNode = require(path.resolve('./src/nodes/ifNode.js'));
+    var ElseNode = require(path.resolve('./src/nodes/elseNode.js'));
 %}
 
 %lex
@@ -14,6 +15,7 @@
 \s+                                             /* Skip */
 \d+                                             return 'NUMBER';
 "if"                                            return 'if'
+"else"                                          return 'else'
 "true"|"fasle"                                  return 'BOOLEAN'
 [a-z][a-zA-Z0-9\_]*                             location = yylloc;return 'ID';
 ' '                                             return 'SPACE'
@@ -55,6 +57,7 @@ statement
 
 condition
     : 'if' boolean block {$$ = new IfNode($2,$3) }
+    | 'if' boolean block 'else' block {$$ = [new IfNode($2,$3),new ElseNode($5)] }
     ;
 
 assignment

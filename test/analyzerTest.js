@@ -6,6 +6,7 @@ var OperatorNode = require('../src/nodes/operatorNode.js');
 var AssingmentNode = require('../src/nodes/assignmentNode.js');
 var IDNode = require('../src/nodes/idNode.js');
 var IfNode = require('../src/nodes/ifNode.js');
+var ElseNode = require('../src/nodes/elseNode.js');
 var BooleanNode = require('../src/nodes/booleanNode.js');
 
 var SymeticsAnalyzer = require('../src/analyzer.js');
@@ -129,6 +130,17 @@ describe('SymeticsAnalyzer',function(){
 	 		expect(error).to.be.undefined;
 		});
 
+		it('should analyze conditional statements with else block',function(){
+	 		analyzer = new SymeticsAnalyzer();
+	 		var _if = new IfNode(_true,[assignX1]);
+	 		var _else = new ElseNode([assignY2]);
+	 		var ast = [[_if,_else]];
+
+	 		analyze(ast);
+
+	 		expect(error).to.be.undefined;
+		});
+
 		it('should analyze scoping for conditional statements',function(){
 	 		analyzer = new SymeticsAnalyzer();
 	 		var cond = new IfNode(_true,[assignY2]);
@@ -138,8 +150,38 @@ describe('SymeticsAnalyzer',function(){
 	 		analyze(ast);
 
 	 		expect(error.constructor).to.be.equal(CompilationError);
+	 		expect(error.message).to.be.eql('y is not defined!');
 		});
 
+		it('should analyze scoping for conditional statements',function(){
+	 		analyzer = new SymeticsAnalyzer();
+	 		var _if = new IfNode(_true,[assignY2]);
+	 		var innerOp = new OperatorNode('+',[x,z])
+	 		var _else = new ElseNode([assignZ3,innerOp]);
+	 		var plus = new OperatorNode('+',[x,z]);
+
+	 		var ast = [assignX1,[_if,_else],plus];
+
+	 		analyze(ast);
+
+	 		expect(error.constructor).to.be.equal(CompilationError);
+	 		expect(error.message).to.be.eql('z is not defined!');
+		});
+
+		it('should analyze different scoping for different conditional statements',function(){
+	 		analyzer = new SymeticsAnalyzer();
+	 		var _if = new IfNode(_true,[assignY2]);
+	 		var innerOp = new OperatorNode('+',[x,y])
+	 		var _else = new ElseNode([assignZ3,innerOp]);
+	 		var plus = new OperatorNode('+',[x,z]);
+
+	 		var ast = [assignX1,[_if,_else],plus];
+
+	 		analyze(ast);
+
+	 		expect(error.constructor).to.be.equal(CompilationError);
+	 		expect(error.message).to.be.eql('y is not defined!');
+		});
 	});
 	
 });
