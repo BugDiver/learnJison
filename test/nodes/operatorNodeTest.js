@@ -12,6 +12,13 @@ describe('OperatorNode',function(){
 		 	expect(jsCode).to.be.eql(opTree.toString());
 		});
 
+		it('should have js equivlaent code of expression',function(){
+		 	var opTree = new OperatorNode('<=',[new NumberNode(2), new NumberNode(3)]);
+		 	var jsCode = '2<=3';
+
+		 	expect(jsCode).to.be.eql(opTree.toString());
+		});
+
 		it('should have js equivlaent code of slightly complex expression',function(){
 		 	var n1 = new NumberNode(1);
 		 	var n2 = new NumberNode(2);

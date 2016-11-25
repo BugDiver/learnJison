@@ -11,7 +11,7 @@ IfNode.prototype.toString = function() {
 			return `console.log(${stmnt.toString()});`	
 		return stmnt.toString();
 	}).join('');
-	return `if(${this.condition}){${block}}`
+	return `if(${this.condition.toString()}){${block}}`
 };
 
 module.exports = IfNode;

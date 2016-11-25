@@ -23,7 +23,9 @@
 "}"                                             return '}';
 ";"                                             return ';';
 "="                                             return '=';
-"+"|"-"|"*"|"/"|"^"|"!"                         return 'OPERATOR'
+"+"|"-"|"*"|"/"
+|"^"|"!"|
+">="|"<="|"<"|">"|"=="                          return 'OPERATOR'
 <<EOF>>                                         return 'EOF';
 /lex
 
@@ -55,10 +57,15 @@ statement
     | condition ';'
     ;
 
+
+
 condition
     : 'if' boolean block {$$ = new IfNode($2,$3) }
     | 'if' boolean block 'else' block {$$ = [new IfNode($2,$3),new ElseNode($5)] }
+    | 'if' expression block {$$ = new IfNode($2, $3)}
+    | 'if' expression block 'else' block{$$ = [new IfNode($2,$3),new ElseNode($5)]}
     ;
+
 
 assignment
     : identifier '=' number  {$$ = new AssingmentNode($1,$3);}
