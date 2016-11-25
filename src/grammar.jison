@@ -23,9 +23,8 @@
 "}"                                             return '}';
 ";"                                             return ';';
 "="                                             return '=';
-"+"|"-"|"*"|"/"
-|"^"|"!"|
-">="|"<="|"<"|">"|"=="                          return 'OPERATOR'
+">="|"<="|"<"|">"|"=="                          return 'COMPARATOR'
+"+"|"-"|"*"|"/"|"^"|"!"                         return 'OPERATOR'
 <<EOF>>                                         return 'EOF';
 /lex
 
@@ -60,10 +59,16 @@ statement
 
 
 condition
-    : 'if' boolean block {$$ = new IfNode($2,$3) }
-    | 'if' boolean block 'else' block {$$ = [new IfNode($2,$3),new ElseNode($5)] }
-    | 'if' expression block {$$ = new IfNode($2, $3)}
-    | 'if' expression block 'else' block{$$ = [new IfNode($2,$3),new ElseNode($5)]}
+    : 'if' predicate block {$$ = new IfNode($2,$3) }
+    | 'if' predicate block 'else' block {$$ = [new IfNode($2,$3),new ElseNode($5)] }
+    ;
+
+predicate
+    : boolean
+    | identifier  COMPARATOR identifier { $$ = new OperatorNode($2,[$1,$3])}
+    | identifier COMPARATOR  number { $$ = new OperatorNode($2,[$1,$3])}
+    | number COMPARATOR  identifier { $$ = new OperatorNode($2,[$1,$3])}
+    | number COMPARATOR  number { $$ = new OperatorNode($2,[$1,$3])}
     ;
 
 
