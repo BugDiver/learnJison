@@ -52,6 +52,9 @@ SymenticsAnalyzer.prototype = {
 
 	analyzeScope : function(node){
 		this.table = this.table.createChild();
+		if (node.predicate && node.predicate instanceof OperatorNode) {
+			this.checkVariables(node.predicate.args);
+		}
 		this.analyze(node.block);
 		this.table = this.table.getParent();
 	},

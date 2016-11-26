@@ -8,7 +8,7 @@ var WhileNode = function(predicate,block){
 WhileNode.prototype.toString = function() {
 	var block = this.block.map(function(stmnt){
 		if (stmnt instanceof OperatorNode) 
-			return `console.log(${stmnt.toString()});`	
+			return `console.log(${stmnt.toString()});`;
 		return stmnt.toString();
 	}).join('');
 	return `while(${this.predicate.toString()}){${block}}`;

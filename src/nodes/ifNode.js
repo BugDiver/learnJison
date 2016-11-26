@@ -1,7 +1,7 @@
 var OperatorNode = require('./operatorNode.js');
 
-var IfNode = function(condition,block){
-	this.condition = condition;
+var IfNode = function(predicate,block){
+	this.predicate = predicate;
 	this.block = block;
 }
 
@@ -11,7 +11,7 @@ IfNode.prototype.toString = function() {
 			return `console.log(${stmnt.toString()});`	
 		return stmnt.toString();
 	}).join('');
-	return `if(${this.condition.toString()}){${block}}`
+	return `if(${this.predicate.toString()}){${block}}`
 };
 
 module.exports = IfNode;

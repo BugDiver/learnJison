@@ -29,6 +29,7 @@ describe('SymeticsAnalyzer',function(){
 	var assignYX = new AssingmentNode(y,x);
 	var assignYZ = new AssingmentNode(y,z);
 	var _true = new BooleanNode('true');
+	var xLessThan2 = new OperatorNode('<',[x,two]);
 
 	var analyze = function(ast){
 		try{
@@ -182,6 +183,31 @@ describe('SymeticsAnalyzer',function(){
 	 		expect(error.constructor).to.be.equal(CompilationError);
 	 		expect(error.message).to.be.eql('y is not defined!');
 		});
+
+		it('should analyze varibles in predicate for conditional statements',function(){
+	 		analyzer = new SymeticsAnalyzer();
+	 		var _if = new IfNode(xLessThan2,[assignY2]);
+	 		var _else = new ElseNode([assignZ3]);
+	 		
+	 		var ast = [assignX1,[_if,_else]];
+
+	 		analyze(ast);
+
+	 		expect(error).to.be.undefined;
+		});
+
+		it('should throw error if  varibles in predicate are undefiend',function(){
+	 		analyzer = new SymeticsAnalyzer();
+	 		var _if = new IfNode(xLessThan2,[assignY2]);
+	 		var _else = new ElseNode([assignZ3]);
+	 		
+	 		var ast = [[_if,_else]];
+
+	 		analyze(ast);
+
+	 		expect(error.constructor).to.be.equal(CompilationError);
+		});
+
 	});
 	
 });
