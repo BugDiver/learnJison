@@ -7,6 +7,7 @@ var IDNode = require('../src/nodes/idNode.js');
 var BooleanNode = require('../src/nodes/booleanNode.js');
 var IfNode = require('../src/nodes/ifNode.js');
 var ElseNode = require('../src/nodes/elseNode.js');
+var WhileNode = require('../src/nodes/whileNode.js');
 var Converter = require('../src/converter.js');
 
 
@@ -25,6 +26,8 @@ describe('Converter',function(){
 	var assignYX = new AssingmentNode(y,x);
 	var assignYZ = new AssingmentNode(y,z);
 	var _true = new BooleanNode('true');
+	var xLessThan2 = new OperatorNode('<',[x,two]);
+
 
 	describe('converte',function(){
 
@@ -135,6 +138,18 @@ describe('Converter',function(){
 			 						'console.log(x+y);'+
 		 						 '}';
 
+		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
+		});
+
+		it('should convert a tree consisting a while loop in js code',function(){
+			var converter = new Converter();
+			var plus = new OperatorNode('+',[x,y]);
+			var _while = new WhileNode(xLessThan2,[plus])
+	 		var ast = [assignX1,assignY2,_while];
+
+		 	var expectedJsCode = 'var x = 1;'+
+		 						 'var y = 2;'+
+		 						 'while(x<2){console.log(x+y);}';
 		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
 		});
 
