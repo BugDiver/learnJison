@@ -72,6 +72,28 @@ describe('Converter',function(){
 		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
 		});
 
+		it('should convert a tree consisting a pow(^) expression in js code',function(){
+			var converter = new Converter();
+			var fact = new OperatorNode('^',[x,y]);
+		 	var ast = [assignX1,assignY2,fact];
+
+		 	var expectedJsCode = 'var x = 1;'+
+		 						 'var y = 2;'+
+		 						 'console.log(Math.pow(x,y));';
+		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
+		});
+
+		it('should convert a tree consisting a factorial expression in js code',function(){
+			var converter = new Converter();
+			var fact = new OperatorNode('!',[x]);
+		 	var ast = [assignX1,assignY2,fact];
+
+		 	var expectedJsCode = 'var x = 1;'+
+		 						 'var y = 2;'+
+		 						 'console.log((function fact(n){return n==1?1:n*fact(n-1)})(x));';
+		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
+		});
+
 		it('should convert a tree consisting a multiple assignment and a complex expression in js code',function(){
 			var converter = new Converter();
 			var plus = new OperatorNode('+',[x,y]);

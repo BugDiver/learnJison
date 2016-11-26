@@ -48,6 +48,35 @@ describe('Compiler',function(){
 	 	expect(expectedJsCode).to.be.equal(actualJsCode);
 	});
 
+
+	it('should compile expressions having pow and return js code',function(){
+		var foolangCode = `x = 2;
+						   y = 3;
+						   x ^ y;`
+						   
+		var expectedJsCode = "var x = 2;"+
+							 "var y = 3;"+
+							 "console.log(Math.pow(x,y));";
+
+	 	var actualJsCode = compiler.compile(foolangCode);
+
+	 	expect(expectedJsCode).to.be.equal(actualJsCode);
+	});
+
+
+	it('should compile expressions having factorials and return js code',function(){
+		var foolangCode = `x = 2;
+						   x!;`
+						   
+		var expectedJsCode = "var x = 2;"+
+							 "console.log((function fact(n){return n==1?1:n*fact(n-1)})(x));";
+
+	 	var actualJsCode = compiler.compile(foolangCode);
+
+	 	expect(expectedJsCode).to.be.equal(actualJsCode);
+	});
+
+
 	it('should compile expressions having multiple variables and multiple operator and return js code',function(){
 		var foolangCode = `x = 2;
 						   y = 3;

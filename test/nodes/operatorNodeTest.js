@@ -32,5 +32,29 @@ describe('OperatorNode',function(){
 
 		 	expect(jsCode).to.be.eql(opTree.toString());
 		});
+
+		it('should have js equivlaent code of pow (^) expression',function(){
+		 	var n1 = new NumberNode(1);
+		 	var n2 = new NumberNode(2);
+		 	var n3 = new NumberNode(3);
+
+		 	var opTree = new OperatorNode('^',[new NumberNode(2), new NumberNode(3)]);
+
+		 	var jsCode = 'Math.pow(2,3)';
+
+		 	expect(jsCode).to.be.eql(opTree.toString());
+		});
+
+		it('should have js equivlaent code of factorial (!) expression',function(){
+		 	var n1 = new NumberNode(1);
+		 	var n2 = new NumberNode(2);
+		 	var n3 = new NumberNode(3);
+
+		 	var opTree = new OperatorNode('!',[new NumberNode(5)]);
+
+		 	var jsCode = '(function fact(n){return n==1?1:n*fact(n-1)})(5)';
+
+		 	expect(jsCode).to.be.eql(opTree.toString());
+		});
 	});	
 });

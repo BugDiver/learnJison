@@ -26,7 +26,8 @@
 ";"                                             return ';';
 "="                                             return '=';
 ">="|"<="|"<"|">"|"=="                          return 'COMPARATOR'
-"+"|"-"|"*"|"/"|"^"|"!"                         return 'OPERATOR'
+"+"|"-"|"*"|"/"|"^"                             return 'OPERATOR'
+"!"                                             return 'FACT'
 <<EOF>>                                         return 'EOF';
 /lex
 
@@ -95,6 +96,8 @@ expression
     | identifier OPERATOR  number { $$ = new OperatorNode($2,[$1,$3])}
     | number OPERATOR  identifier { $$ = new OperatorNode($2,[$1,$3])}
     | number OPERATOR  number { $$ = new OperatorNode($2,[$1,$3])}
+    | number FACT {$$ = new OperatorNode($2,[$1])}
+    | identifier FACT {$$ = new OperatorNode($2,[$1])}
     ;
 
 block
