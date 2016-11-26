@@ -8,6 +8,7 @@ var IDNode = require('../src/nodes/idNode.js');
 var IfNode = require('../src/nodes/ifNode.js');
 var ElseNode = require('../src/nodes/elseNode.js');
 var BooleanNode = require('../src/nodes/booleanNode.js');
+var WhileNode = require('../src/nodes/whileNode.js');
 
 var SymeticsAnalyzer = require('../src/analyzer.js');
 var CompilationError = require('../src/error.js');
@@ -208,6 +209,36 @@ describe('SymeticsAnalyzer',function(){
 	 		expect(error.constructor).to.be.equal(CompilationError);
 		});
 
+		it('should analyze loop statements',function(){
+	 		analyzer = new SymeticsAnalyzer();
+	 		var _while = new WhileNode(xLessThan2,[assignY2])
+
+	 		var ast  = [assignX1,_while];
+	 		analyze(ast);
+
+	 		expect(error).to.be.undefined;
+		});
+
+		it('should throw error for undefiend variables used in predicate for loop statements',function(){
+	 		analyzer = new SymeticsAnalyzer();
+	 		var _while = new WhileNode(xLessThan2,[assignX1])
+
+	 		var ast  = [assignY2,_while];
+	 		analyze(ast);
+
+	 		expect(error.constructor).to.be.eql(CompilationError);
+		});
+		it('should throw error for undefiend variables used in loop block',function(){
+	 		analyzer = new SymeticsAnalyzer();
+	 		var plus = new OperatorNode('+',[x,z]);
+	 		var _while = new WhileNode(xLessThan2,[plus]);
+
+	 		var ast  = [assignX1,_while];
+	 		analyze(ast);
+
+	 		expect(error.constructor).to.be.eql(CompilationError);
+	 		expect(error.message).to.be.eql('z is not defined!');
+
+		});
 	});
-	
 });

@@ -4,6 +4,7 @@ var IDNode = require('./nodes/idNode.js');
 var AssingNode = require('./nodes/assignmentNode.js');
 var IfNode = require('./nodes/ifNode.js');
 var ElseNode = require('./nodes/elseNode.js');
+var WhileNode = require('./nodes/whileNode.js');
 var SymbolTable = require('./symbolTable.js');
 var CompilationError = require('./error.js');
 
@@ -64,7 +65,7 @@ SymenticsAnalyzer.prototype = {
 	},
 
 	isBlock : function(node){
-		return (node instanceof IfNode) || (node instanceof ElseNode);
+		return (node instanceof IfNode) || (node instanceof ElseNode) || (node instanceof WhileNode);
 	}
 
 };
