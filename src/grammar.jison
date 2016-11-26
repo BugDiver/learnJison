@@ -8,6 +8,7 @@
     var BooleanNode = require(path.resolve('./src/nodes/booleanNode.js'));
     var IfNode = require(path.resolve('./src/nodes/ifNode.js'));
     var ElseNode = require(path.resolve('./src/nodes/elseNode.js'));
+    var WhileNode = require(path.resolve('./src/nodes/whileNode.js'));
 %}
 
 %lex
@@ -16,6 +17,7 @@
 \d+                                             return 'NUMBER';
 "if"                                            return 'if'
 "else"                                          return 'else'
+"while"                                         return 'while'
 "true"|"fasle"                                  return 'BOOLEAN'
 [a-z][a-zA-Z0-9\_]*                             location = yylloc;return 'ID';
 ' '                                             return 'SPACE'
@@ -54,6 +56,7 @@ statement
     : assignment ';'
     | expressions ';'
     | condition ';'
+    | loop ';'
     ;
 
 
@@ -61,6 +64,10 @@ statement
 condition
     : 'if' predicate block {$$ = new IfNode($2,$3) }
     | 'if' predicate block 'else' block {$$ = [new IfNode($2,$3),new ElseNode($5)] }
+    ;
+
+loop
+    : 'while' predicate block {$$ = new WhileNode($2,$3)}
     ;
 
 predicate

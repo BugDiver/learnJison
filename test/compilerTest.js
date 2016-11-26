@@ -113,4 +113,34 @@ describe('Compiler',function(){
 	 	expect(compile).to.throws(Error,'y is not defined!');
 	});
 
+	it('should compile expressions having loop statement return js code',function(){
+		var foolangCode = `x = 2;
+						   while x > 2{
+						   		y = 3;
+						   		x + y;
+						   };`
+						   
+		var expectedJsCode = "var x = 2;"+
+							 "while(x>2){"+
+							 "var y = 3;"+
+							 "console.log(x+y);"+
+							 "}";
+
+	 	var actualJsCode = compiler.compile(foolangCode);
+
+	 	expect(expectedJsCode).to.be.equal(actualJsCode);
+	});
+
+	it('should throw error for undefiend variable used in predicate',function(){
+		var foolangCode = `x = 2;
+						   while y > 2 {
+						   		y = 3;
+						   };`
+						   
+		var compile = function(){
+			compiler.compile(foolangCode);
+		}
+
+	 	expect(compile).to.throws(Error,'y is not defined!');
+	});
 });
