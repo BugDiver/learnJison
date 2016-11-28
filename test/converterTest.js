@@ -50,6 +50,33 @@ describe('Converter',function(){
 		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
 		});
 
+		it('should convert a tree consisting a assignment to expression in js code',function(){
+			var converter = new Converter();
+			var plus = new OperatorNode('+',[x,3]);
+			var expressionAssign = new AssingmentNode(y,plus);
+
+		 	var ast = [assignX1,expressionAssign];
+
+		 	var expectedJsCode = 'var x = 1;'+
+		 						 'var y = x+3;';
+
+		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
+		});
+
+		it('should convert a tree consisting a assignment to expression only with identifiers in js code',function(){
+			var converter = new Converter();
+			var plus = new OperatorNode('+',[x,y]);
+			var expressionAssign = new AssingmentNode(z,plus);
+
+		 	var ast = [assignX1,assignY2,expressionAssign];
+
+		 	var expectedJsCode = 'var x = 1;'+
+		 						 'var y = 2;'+
+		 						 'var z = x+y;';
+
+		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
+		});
+
 		it('should convert a tree consisting a multiple assignment to another variable in js code',function(){
 			var converter = new Converter();
 		 	var ast = [assignX1,assignYX];

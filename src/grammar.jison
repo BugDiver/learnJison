@@ -83,6 +83,7 @@ predicate
 assignment
     : identifier '=' number  {$$ = new AssingmentNode($1,$3);}
     | identifier '=' identifier {$$ = new AssingmentNode($1,$3);}
+    | identifier '=' expression {$$ = new AssingmentNode($1,$3);}
     ; 
 
 expressions

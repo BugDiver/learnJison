@@ -22,6 +22,41 @@ describe('Compiler',function(){
 	 	expect(expectedJsCode).to.be.equal(actualJsCode);
 	});
 
+	it('should compile multiple assignments to exression and return js code',function(){
+		var foolangCode = `x = 2;
+						   y = x + 2;`
+
+		var expectedJsCode = "var x = 2;"+
+							  "var y = x+2;";
+
+	 	var actualJsCode = compiler.compile(foolangCode);
+
+	 	expect(expectedJsCode).to.be.equal(actualJsCode);
+	});
+
+	it('should compile multiple assignments to exression only with ids and return js code',function(){
+		var foolangCode = `x = 2;
+						   y = x + x;`
+
+		var expectedJsCode = "var x = 2;"+
+							  "var y = x+x;";
+
+	 	var actualJsCode = compiler.compile(foolangCode);
+
+	 	expect(expectedJsCode).to.be.equal(actualJsCode);
+	});
+
+	it('should throw error for undefiend variable used assignment expression',function(){
+		var foolangCode = `x = 2;
+						   y = x + y;`
+
+	 	var compile = function(){
+			compiler.compile(foolangCode);
+		}
+
+	 	expect(compile).to.throws(Error,'y is not defined!');
+	});
+
 	it('should compile expressions having variables and return js code',function(){
 		var foolangCode = `x = 2;
 						   x + 2;`

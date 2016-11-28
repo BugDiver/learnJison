@@ -46,6 +46,10 @@ SymenticsAnalyzer.prototype = {
 		if (value instanceof IDNode){
 			this.table.addSymbol(key,this.table.getSymbol(value));
 		}
+		else if(value instanceof OperatorNode){
+			this.checkVariables(value.args);
+			this.table.addSymbol(key,value);
+		}
 		else{
 			this.table.addSymbol(key,value);
 		}

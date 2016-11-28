@@ -101,6 +101,30 @@ describe('SymeticsAnalyzer',function(){
 	 		expect(error).to.be.undefined;
 		});
 
+		it('should analyze variabale assignment to an expression',function(){
+	 		analyzer = new SymeticsAnalyzer();
+	 		var plus = new OperatorNode('+',[x,y]);
+	 		var expressionAssignment = new AssingmentNode(x,plus);
+
+	 		var ast = [assignX1,assignYX,expressionAssignment];
+
+	 		analyze(ast);
+
+	 		expect(error).to.be.undefined;
+		});
+
+		it('should throw error if a undefined variabale is used in a assignment expression',function(){
+	 		analyzer = new SymeticsAnalyzer();
+	 		var plus = new OperatorNode('+',[x,y]);
+	 		var expressionAssignment = new AssingmentNode(x,plus);
+
+	 		var ast = [assignX1,expressionAssignment];
+
+	 		analyze(ast);
+
+	 		expect(error.constructor).to.be.equal(CompilationError);
+		});
+
 		it('should throw error if a undefined variabale assign to another variable',function(){
 	 		analyzer = new SymeticsAnalyzer();
 	 		var plus = new OperatorNode('+',[x,y]);
@@ -110,6 +134,8 @@ describe('SymeticsAnalyzer',function(){
 
 	 		expect(error.constructor).to.be.equal(CompilationError);
 		});
+
+
 
 		it('should analyze multiple assignments with multiple expressions',function(){
 	 		analyzer = new SymeticsAnalyzer();
