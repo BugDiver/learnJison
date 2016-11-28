@@ -7,6 +7,7 @@ var BooleanNode = require('./nodes/booleanNode.js');
 var ElseNode = require('./nodes/elseNode.js');
 var WhileNode = require('./nodes/whileNode.js');
 var FuncNode = require('./nodes/funcNode.js');
+var CallNode = require('./nodes/callNode.js');
 var SymbolTable = require('./symbolTable.js');
 var CompilationError = require('./error.js');
 
@@ -26,6 +27,12 @@ SymenticsAnalyzer.prototype = {
 			}else if (this.isBlock(node)) {
 				this.analyzeScope(node);
 			}
+			else if(node instanceof CallNode){
+				if(this.isUndefiened(node.name)){
+					this.throwUndefinedError(node.name.value,node.name.getLocation())
+				}
+				this.checkVariables(node.params);
+			}
 			else if (node instanceof OperatorNode) {
 				this.checkVariables(node.args);
 			}
@@ -39,7 +46,7 @@ SymenticsAnalyzer.prototype = {
 				this.checkVariables(child.args);
 			}
 			else if (this.isUndefiened(child)) {
-				throw new CompilationError(child.value+" is not defined!",child.getLocation());
+				this.throwUndefinedError(child.value,child.getLocation())
 			}
 		}
 	},
@@ -54,6 +61,7 @@ SymenticsAnalyzer.prototype = {
 		}
 		else if(value instanceof FuncNode){
 			this.analyzeScope(value);
+			this.table.addSymbol(key,value);
 		}
 		else{
 			this.table.addSymbol(key,value);
@@ -86,6 +94,9 @@ SymenticsAnalyzer.prototype = {
 			this.declareVar(arg,new BooleanNode('true'));
 		};
 		
+	},
+	throwUndefinedError : function(id,location){
+		throw new CompilationError(id+" is not defined!",location);
 	}
 
 };

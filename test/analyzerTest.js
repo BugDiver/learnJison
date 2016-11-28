@@ -10,6 +10,7 @@ var ElseNode = require('../src/nodes/elseNode.js');
 var WhileNode = require('../src/nodes/whileNode.js');
 var BooleanNode = require('../src/nodes/booleanNode.js');
 var FuncNode = require('../src/nodes/funcNode.js');
+var CallNode = require('../src/nodes/callNode.js');
 
 var SymeticsAnalyzer = require('../src/analyzer.js');
 var CompilationError = require('../src/error.js');
@@ -289,6 +290,48 @@ describe('SymeticsAnalyzer',function(){
 	 		analyze(ast);
 
 	 		expect(error).to.be.undefined;
+		});
+
+		it('should analyze function call',function(){
+	 		analyzer = new SymeticsAnalyzer();
+	 		var plus = new OperatorNode('+',[x,y]);
+	 		var funcName = new IDNode('myfunction',{first_line: 1,first_column : 1});
+	 		var myfunction = new FuncNode([x,y],[plus]);
+	 		var funcCall = new CallNode(funcName,[one,two]);
+
+	 		var ast  = [assignX1,new AssingmentNode(funcName,myfunction),funcCall];
+
+	 		analyze(ast);
+
+	 		expect(error).to.be.undefined;
+		});
+
+		it('should throw error if a undefiend function is called',function(){
+	 		analyzer = new SymeticsAnalyzer();
+	 		var funcName = new IDNode('myFunction',location);
+	 		var funcCall = new CallNode(funcName,[one,two]);
+
+	 		var ast  = [assignX1,funcCall];
+
+	 		analyze(ast);
+
+	 		expect(error.constructor).to.be.eql(CompilationError);
+	 		expect(error.message).to.be.eql('myFunction is not defined!');
+		});
+
+		it('should throw error if a undefiend variable is passed as parameter',function(){
+	 		analyzer = new SymeticsAnalyzer();
+	 		var plus = new OperatorNode('+',[x,y]);
+	 		var funcName = new IDNode('myfunction',{first_line: 1,first_column : 1});
+	 		var myfunction = new FuncNode([x,y],[plus]);
+	 		var funcCall = new CallNode(funcName,[one,z]);
+
+	 		var ast  = [assignX1,new AssingmentNode(funcName,myfunction),funcCall];
+
+	 		analyze(ast);
+
+	 		expect(error.constructor).to.be.eql(CompilationError);
+	 		expect(error.message).to.be.eql('z is not defined!');
 		});
 
 	});
