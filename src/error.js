@@ -9,7 +9,6 @@ var CompilationError = function CompilationError(message,loc){
 
 
 formatStack = function(msg,loc){
-
 	return `CompilationError: ${msg}
 		at :${loc.line}:${loc.char}`
 }

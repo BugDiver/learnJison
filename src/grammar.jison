@@ -9,25 +9,30 @@
     var IfNode = require(path.resolve('./src/nodes/ifNode.js'));
     var ElseNode = require(path.resolve('./src/nodes/elseNode.js'));
     var WhileNode = require(path.resolve('./src/nodes/whileNode.js'));
+    var FuncNode = require(path.resolve('./src/nodes/funcNode.js'));
 %}
 
 %lex
 %%
 \s+                                             /* Skip */
 \d+                                             return 'NUMBER';
-"if"                                            return 'if'
-"else"                                          return 'else'
-"while"                                         return 'while'
-"true"|"fasle"                                  return 'BOOLEAN'
+"if"                                            return 'if';
+"else"                                          return 'else';
+"while"                                         return 'while';
+"true"|"fasle"                                  return 'BOOLEAN';
 [a-z][a-zA-Z0-9\_]*                             location = yylloc;return 'ID';
-' '                                             return 'SPACE'
+' '                                             return 'SPACE';
 "{"                                             return '{';
+"}"                                             return '}';
+"("                                             return '(';
+")"                                             return ')';
+"->"                                            return '->';
 "}"                                             return '}';
 ";"                                             return ';';
 "="                                             return '=';
-">="|"<="|"<"|">"|"=="                          return 'COMPARATOR'
-"+"|"-"|"*"|"/"|"^"                             return 'OPERATOR'
-"!"                                             return 'FACT'
+">="|"<="|"<"|">"|"=="                          return 'COMPARATOR';
+"+"|"-"|"*"|"/"|"^"                             return 'OPERATOR';
+"!"                                             return 'FACT';
 <<EOF>>                                         return 'EOF';
 /lex
 
@@ -43,7 +48,7 @@
 
 program
     : statements EOF { 
-                    // console.log(JSON.stringify($$));
+                    // console.log(JSON.stringify($$.toString()));
                     return $$;
        }
     ;
@@ -71,6 +76,20 @@ loop
     : 'while' predicate block {$$ = new WhileNode($2,$3)}
     ;
 
+func 
+    : '(' arguments ')' '->' block {$$ = new FuncNode($2,$5); }
+    ;
+
+arguments
+    : argument {$$ = [$1];}
+    | arguments argument {$$ = $1, $$.push($2)}
+    ;
+
+argument
+    : identifier
+    ;
+
+
 predicate
     : boolean
     | identifier  COMPARATOR identifier { $$ = new OperatorNode($2,[$1,$3])}
@@ -84,6 +103,7 @@ assignment
     : identifier '=' number  {$$ = new AssingmentNode($1,$3);}
     | identifier '=' identifier {$$ = new AssingmentNode($1,$3);}
     | identifier '=' expression {$$ = new AssingmentNode($1,$3);}
+    | identifier '=' func {$$ = new AssingmentNode($1,$3)}
     ; 
 
 expressions
