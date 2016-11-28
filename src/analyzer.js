@@ -3,8 +3,10 @@ var NumberNode = require('./nodes/numberNode.js');
 var IDNode = require('./nodes/idNode.js');
 var AssingNode = require('./nodes/assignmentNode.js');
 var IfNode = require('./nodes/ifNode.js');
+var BooleanNode = require('./nodes/booleanNode.js');
 var ElseNode = require('./nodes/elseNode.js');
 var WhileNode = require('./nodes/whileNode.js');
+var FuncNode = require('./nodes/funcNode.js');
 var SymbolTable = require('./symbolTable.js');
 var CompilationError = require('./error.js');
 
@@ -50,6 +52,9 @@ SymenticsAnalyzer.prototype = {
 			this.checkVariables(value.args);
 			this.table.addSymbol(key,value);
 		}
+		else if(value instanceof FuncNode){
+			this.analyzeScope(value);
+		}
 		else{
 			this.table.addSymbol(key,value);
 		}
@@ -57,6 +62,9 @@ SymenticsAnalyzer.prototype = {
 
 	analyzeScope : function(node){
 		this.table = this.table.createChild();
+		if (node.args) {
+			this.declareArgs(node.args);
+		}
 		if (node.predicate && node.predicate instanceof OperatorNode) {
 			this.checkVariables(node.predicate.args);
 		}
@@ -70,6 +78,14 @@ SymenticsAnalyzer.prototype = {
 
 	isBlock : function(node){
 		return (node instanceof IfNode) || (node instanceof ElseNode) || (node instanceof WhileNode);
+	},
+
+	declareArgs : function(args){
+		for (var i = 0; i < args.length; i++) {
+			var arg = args[i];
+			this.declareVar(arg,new BooleanNode('true'));
+		};
+		
 	}
 
 };
