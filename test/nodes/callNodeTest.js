@@ -10,13 +10,13 @@ describe('CallNode',function(){
 	describe('toString',function(){
 		it('should have js equivalent of a function call',function(){
 		 	var functionCall = new CallNode(new IdNode('myFunc'),[new NumberNode(1),new NumberNode(2)]);
-		 	var expected = `myFunc(1,2)`
+		 	var expected = `myFunc(1,2);`
 		 	expect(functionCall.toString()).to.be.eql(expected);
 		});
 
 		it('should have js equivalent of a function call with id params',function(){
 		 	var functionCall = new CallNode(new IdNode('myFunc'),[new NumberNode(1),new IdNode('x')]);
-		 	var expected = `myFunc(1,x)`
+		 	var expected = `myFunc(1,x);`
 		 	expect(functionCall.toString()).to.be.eql(expected);
 		});
 

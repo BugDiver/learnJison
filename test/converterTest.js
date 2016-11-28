@@ -9,6 +9,7 @@ var IfNode = require('../src/nodes/ifNode.js');
 var ElseNode = require('../src/nodes/elseNode.js');
 var WhileNode = require('../src/nodes/whileNode.js');
 var FuncNode = require('../src/nodes/funcNode.js');
+var CallNode = require('../src/nodes/callNode.js');
 var Converter = require('../src/converter.js');
 
 
@@ -215,12 +216,12 @@ describe('Converter',function(){
 		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
 		});
 
-		it('should convert a tree consisting a function declaration with loop and condition js code',function(){
+		it('should convert a tree consisting a function declaration with loop and condition in js code',function(){
 			var converter = new Converter();
 			var plus = new OperatorNode('+',[x,y]);
 
 			var _while = new WhileNode(xLessThan2,[plus])
-			var func = new AssingmentNode('myFunction',new FuncNode([x,y],[plus,_while]));
+			var func = new AssingmentNode(new IDNode('myFunction'),new FuncNode([x,y],[plus,_while]));
 	 		var ast = [assignX1,assignY2,func];
 
 		 	var expectedJsCode = 'var x = 1;'+
@@ -231,6 +232,28 @@ describe('Converter',function(){
 		 						 		'console.log(x+y);'+
 		 						 	'}'+
 		 						 '};';
+		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
+		});
+
+		it('should convert a tree consisting a function declaration and call in  js code',function(){
+			var converter = new Converter();
+			var plus = new OperatorNode('+',[x,y]);
+
+			var _while = new WhileNode(xLessThan2,[plus]);
+			var funcName = new IDNode('myFunction');
+			var func = new AssingmentNode(funcName,new FuncNode([x,y],[plus,_while]));
+			var funcCall = new CallNode(funcName,[one,two]);
+	 		var ast = [assignX1,assignY2,func,funcCall];
+
+		 	var expectedJsCode = 'var x = 1;'+
+		 						 'var y = 2;'+
+		 						 'var myFunction = function(x,y){'+
+		 						 	'console.log(x+y);'+
+		 						 	'while(x<2){'+
+		 						 		'console.log(x+y);'+
+		 						 	'}'+
+		 						 '};'+
+		 						 'myFunction(1,2);';
 		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
 		});
 	});

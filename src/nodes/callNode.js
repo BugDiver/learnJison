@@ -4,7 +4,7 @@ var CallNode = function(name,params){
 }
 
 CallNode.prototype.toString = function() {
-	return `${this.name.toString()}(${this.params.toString()})`;
+	return `${this.name.toString()}(${this.params.toString()});`;
 };
 
 module.exports = CallNode;
