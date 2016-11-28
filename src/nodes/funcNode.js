@@ -12,7 +12,6 @@ FuncNode.prototype.toString = function() {
 			return `console.log(${stmnt.toString()});`	
 		return stmnt.toString();
 	}).join('');
-	console.log('===============',block);
 	return `function(${this.args.toString()}){${block}}`
 };
 
