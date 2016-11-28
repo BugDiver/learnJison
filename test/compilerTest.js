@@ -256,4 +256,60 @@ describe('Compiler',function(){
 	 	expect(compile).to.throws(Error,'z is not defined!');
 	});
 
+	it('should compile code having fucntion and function call and  return js code',function(){
+		var foolangCode = `x = 2;
+						   myFunction = (y)-> {
+						   		if y > 2 {
+						   			y = y - x;
+						   		};
+						   };
+						   myFunction(3);`
+						   
+		var expectedJsCode = "var x = 2;"+
+							 "var myFunction = function(y){"+
+							 	"if(y>2){"+
+							 		"var y = y-x;"+
+							 	"}"+
+							 "};"+
+							 "myFunction(3);";
+
+	 	var actualJsCode = compiler.compile(foolangCode);
+
+	 	expect(expectedJsCode).to.be.equal(actualJsCode);
+	});
+
+	it('should compile code having fucntion and function call with identifiers and  return js code',function(){
+		var foolangCode = `x = 2;
+						   myFunction = (y)-> {
+						   		if y > 2 {
+						   			y = y - x;
+						   		};
+						   };
+						   myFunction(x);`
+						   
+		var expectedJsCode = "var x = 2;"+
+							 "var myFunction = function(y){"+
+							 	"if(y>2){"+
+							 		"var y = y-x;"+
+							 	"}"+
+							 "};"+
+							 "myFunction(x);";
+
+	 	var actualJsCode = compiler.compile(foolangCode);
+
+	 	expect(expectedJsCode).to.be.equal(actualJsCode);
+	});
+
+	it('should throw error for undefiend variable passed as parameter in function call',function(){
+		var foolangCode = `x = 2;
+						   myFunc = (y)->{
+						   		y = x + 2;
+						   };
+						   myFunc(z);`
+						   
+		var compile = function(){
+			compiler.compile(foolangCode);
+		}
+	 	expect(compile).to.throws(Error,'z is not defined!');
+	});
 });

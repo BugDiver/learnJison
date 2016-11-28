@@ -10,6 +10,7 @@
     var ElseNode = require(path.resolve('./src/nodes/elseNode.js'));
     var WhileNode = require(path.resolve('./src/nodes/whileNode.js'));
     var FuncNode = require(path.resolve('./src/nodes/funcNode.js'));
+    var CallNode = require(path.resolve('./src/nodes/callNode.js'));
 %}
 
 %lex
@@ -63,6 +64,7 @@ statement
     | expressions ';'
     | condition ';'
     | loop ';'
+    | call ';'
     ;
 
 
@@ -80,6 +82,10 @@ func
     : '(' arguments ')' '->' block {$$ = new FuncNode($2,$5); }
     ;
 
+call
+    : identifier '(' parameters ')' {$$ = new CallNode($1,$3);}
+    ;
+
 arguments
     : argument {$$ = [$1];}
     | arguments argument {$$ = $1, $$.push($2)}
@@ -89,6 +95,15 @@ argument
     : identifier
     ;
 
+parameters
+    : parameter { $$ = [$1];}
+    | parameters parameter {$$ = $1, $$.push($2)}
+    ;
+
+parameter
+    : identifier
+    | number
+    ;
 
 predicate
     : boolean
