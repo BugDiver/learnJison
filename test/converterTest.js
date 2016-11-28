@@ -8,6 +8,7 @@ var BooleanNode = require('../src/nodes/booleanNode.js');
 var IfNode = require('../src/nodes/ifNode.js');
 var ElseNode = require('../src/nodes/elseNode.js');
 var WhileNode = require('../src/nodes/whileNode.js');
+var FuncNode = require('../src/nodes/funcNode.js');
 var Converter = require('../src/converter.js');
 
 
@@ -202,5 +203,35 @@ describe('Converter',function(){
 		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
 		});
 
+		it('should convert a tree consisting a function declaration js code',function(){
+			var converter = new Converter();
+			var plus = new OperatorNode('+',[x,y]);
+			var func = new AssingmentNode('myFunction',new FuncNode([x,y],[plus]));
+	 		var ast = [assignX1,assignY2,func];
+
+		 	var expectedJsCode = 'var x = 1;'+
+		 						 'var y = 2;'+
+		 						 'var myFunction = function(x,y){console.log(x+y);};';
+		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
+		});
+
+		it('should convert a tree consisting a function declaration with loop and condition js code',function(){
+			var converter = new Converter();
+			var plus = new OperatorNode('+',[x,y]);
+
+			var _while = new WhileNode(xLessThan2,[plus])
+			var func = new AssingmentNode('myFunction',new FuncNode([x,y],[plus,_while]));
+	 		var ast = [assignX1,assignY2,func];
+
+		 	var expectedJsCode = 'var x = 1;'+
+		 						 'var y = 2;'+
+		 						 'var myFunction = function(x,y){'+
+		 						 	'console.log(x+y);'+
+		 						 	'while(x<2){'+
+		 						 		'console.log(x+y);'+
+		 						 	'}'+
+		 						 '};';
+		 	expect(expectedJsCode).to.be.equal(converter.convert(ast));
+		});
 	});
 });

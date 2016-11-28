@@ -7,6 +7,7 @@ var AssingmentNode = require('../src/nodes/assignmentNode.js');
 var IDNode = require('../src/nodes/idNode.js');
 var IfNode = require('../src/nodes/ifNode.js');
 var ElseNode = require('../src/nodes/elseNode.js');
+var WhileNode = require('../src/nodes/whileNode.js');
 var BooleanNode = require('../src/nodes/booleanNode.js');
 var FuncNode = require('../src/nodes/funcNode.js');
 
@@ -272,13 +273,13 @@ describe('SymeticsAnalyzer',function(){
 	 		var myfunction = new FuncNode([x,y],[assignX1,assignY2]);
 
 	 		var ast  = [assignX1,new AssingmentNode(new IDNode('myfunction'),myfunction)];
-	 		
+
 	 		analyze(ast);
 
 	 		expect(error).to.be.undefined;
 		});
 
-		it.only('should analyze arguments used in function body',function(){
+		it('should analyze arguments used in function body',function(){
 	 		analyzer = new SymeticsAnalyzer();
 	 		var plus = new OperatorNode('+',[x,y]);
 	 		var myfunction = new FuncNode([x,y],[plus]);
