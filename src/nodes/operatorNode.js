@@ -8,8 +8,7 @@ var symbolToConverter = {
 	'<' : function(args){return args.join('<')},
 	'>' : function(args){return args.join('>')},
 	'<=' : function(args){return args.join('<=')},
-	'<=' : function(args){return args.join('<=')},
-	'=>' : function(args){return args.join('=>')},
+	'>=' : function(args){return args.join('>=')},
 	'^' : function(args){return `Math.pow(${args.join(',')})`},
 	'!' : function(args){return `(function fact(n){return n==1?1:n*fact(n-1)})(${args[0]})`}
 }
